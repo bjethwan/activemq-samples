@@ -15,6 +15,7 @@ public class Sample1
             
 			BrokerService broker = new BrokerService();
             broker.addConnector("tcp://localhost:61616");
+            broker.addConnector("nio://localhost:61618");
             broker.start();
             broker.waitUntilStarted();
             
