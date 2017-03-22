@@ -1,4 +1,4 @@
-package activemq.samples;
+package com.bjethwan;
 
 import java.util.ArrayList;
 import java.util.List;

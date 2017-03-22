@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>activemq.samples</groupId>
-	<artifactId>activemq.samples</artifactId>
+	<groupId>com.bjethwan</groupId>
+	<artifactId>activemq.embedded.broker.starting.brokers</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
@@ -20,8 +20,21 @@
 			<version>1.7.21</version>
 		</dependency>
 
-
-
 	</dependencies>
+
+	<build>
+		<finalName>LabMgmt</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
