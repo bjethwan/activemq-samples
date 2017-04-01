@@ -1,4 +1,4 @@
-package activemq.samples;
+package com.bjethwan;
 
 import org.apache.activemq.broker.BrokerService;
 
