@@ -1,0 +1,40 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+
+	<broker xmlns="http://activemq.apache.org/schema/core"
+		brokerName="bipin-emm" persistent="false" useJmx="true">
+
+		<destinationPolicy>
+			<policyMap>
+				<policyEntries>
+					<policyEntry topic=">" producerFlowControl="true">
+						<pendingMessageLimitStrategy>
+							<constantPendingMessageLimitStrategy
+								limit="1000" />
+						</pendingMessageLimitStrategy>
+					</policyEntry>
+					<policyEntry queue=">" producerFlowControl="true">
+					</policyEntry>
+				</policyEntries>
+			</policyMap>
+		</destinationPolicy>
+
+		<systemUsage>
+			<systemUsage>
+				<memoryUsage>
+					<memoryUsage limit="512 kb" />
+				</memoryUsage>
+				<storeUsage>
+					<storeUsage limit="1 mb" />
+				</storeUsage>
+				<tempUsage>
+					<tempUsage limit="1 mb" />
+				</tempUsage>
+			</systemUsage>
+		</systemUsage>
+
+	</broker>
+</beans>
