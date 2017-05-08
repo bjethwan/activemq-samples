@@ -17,13 +17,16 @@
 						</pendingMessageLimitStrategy>
 					</policyEntry>
 					<policyEntry queue=">" producerFlowControl="true">
+						<pendingQueuePolicy>
+							<vmQueueCursor />
+						</pendingQueuePolicy>
 					</policyEntry>
 				</policyEntries>
 			</policyMap>
 		</destinationPolicy>
 
 		<systemUsage>
-			<systemUsage>
+			<systemUsage sendFailIfNoSpace="false">
 				<memoryUsage>
 					<memoryUsage limit="512 kb" />
 				</memoryUsage>

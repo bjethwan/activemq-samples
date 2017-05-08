@@ -1,9 +1,11 @@
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -20,10 +22,12 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 *
 */
 
-public class Sender {
+public class Sender2 {
 	
 	public static void main(String[] args) throws JMSException 
 	{
+		String msgString = "BUY KONY 5 SHARES";
+		
 		//.Connection
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 		Connection connection = connectionFactory.createConnection();
@@ -35,8 +39,12 @@ public class Sender {
 		//.Session.Queue
 		Queue queue = session.createQueue("EM_TRADE_REQUEST_Q");
 		
+		//.Session.Queue
+		Queue responseQueue = session.createQueue("EM_TRADE_RESPONSE_Q");
+		
 		//Session.Message
-		Message message = session.createTextMessage("BUY APPLE 1000 SHARES");
+		Message message = session.createTextMessage(msgString);
+		message.setJMSReplyTo(responseQueue);
 		
 		//Session.MessageProducer
 		MessageProducer producer = session.createProducer(queue);
@@ -44,7 +52,18 @@ public class Sender {
 		//MessageProducer.send(message)
 		producer.send(queue, message);
 		
-		System.out.println("Message sent");
+		System.out.println("Message sent: " + msgString);
+		
+		String filter = "JMSCorrelationID = '" + message.getJMSMessageID() +"'";
+		System.out.println("filter: "+filter);
+		
+		MessageConsumer consumer = session.createConsumer(responseQueue,filter);
+		TextMessage responseMessage = (TextMessage)consumer.receive();
+		
+		if(responseMessage!=null)
+			System.out.println("Received Confirmation: "+ responseMessage.getText());
+		else
+			System.out.println("Timeout waiting for response");
 		
 		connection.close();
 	}

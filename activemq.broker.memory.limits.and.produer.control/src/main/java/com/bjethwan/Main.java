@@ -32,6 +32,21 @@ public class Main {
 	private final int TOMCAT_THREADS = 20;
 
 	private CountDownLatch done;
+	private int msgCount;
+
+
+
+
+	public static void main(String[] args) throws Exception {
+
+		Main sample = new Main();
+
+		sample.before();
+		sample.runPerformanceTest();
+		//sample.after();
+	}
+
+
 
 	public void before() throws Exception{
 
@@ -41,16 +56,23 @@ public class Main {
 		pooledFactory = new PooledConnectionFactory(connectionFactory);
 	}
 
+	private void startEmbeddedBrokerWithGivenConfig(String config) throws Exception{
+
+		broker = BrokerFactory.createBroker(new URI(config));
+		broker.start();
+	}
+
+
+
 	public void runPerformanceTest() throws Exception{
-		//This should behave like tomcat threads
-		
+
+		//Tomcat threads
 		ExecutorService service = Executors.newFixedThreadPool(TOMCAT_THREADS);
-		
-		int count = 100;
-		while((count--)>0){
-			
+
+		boolean keepMoving = true;
+		while(keepMoving){
 			this.done = new CountDownLatch(NUM_DEVICES);
-			
+
 			for(int i=1; i<=NUM_DEVICES; i++){
 				service.execute(new Runnable(){
 					@Override
@@ -64,6 +86,7 @@ public class Main {
 							producer.close();
 							session.close();
 							connection.close();
+							msgCount++;
 						} catch (JMSException e) {
 							e.printStackTrace();
 						} finally {
@@ -72,11 +95,12 @@ public class Main {
 					}
 				});
 			}
-			
+
 			done.await();
+			System.out.println("Number of messages posted by devices: " + msgCount);
 			TimeUnit.SECONDS.sleep(2);
 		}
-		
+
 		service.shutdown();
 
 	}
@@ -86,21 +110,9 @@ public class Main {
 		broker.stop();
 	}
 
-	public void startEmbeddedBrokerWithGivenConfig(String config) throws Exception{
-
-		broker = BrokerFactory.createBroker(new URI(config));
-		broker.start();
-	}
 
 
 
-	public static void main(String[] args) throws Exception {
 
-		Main sample = new Main();
 
-		sample.before();
-		sample.runPerformanceTest();
-		//sample.after();
-
-	}
 }
